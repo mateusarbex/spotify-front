@@ -1,5 +1,11 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { IoAddCircleOutline } from "react-icons/io5";
+
+const activeClick = keyframes`
+  to{
+    background-color:#1f1f1f;
+  }
+`;
 
 const TrackContainer = styled.div`
   position: relative;
@@ -8,10 +14,15 @@ const TrackContainer = styled.div`
   height: 100%;
   max-height: 100px;
   flex-direction: row;
+
   @media (max-width: 400px) {
+    :active {
+      opacity: 50%;
+    }
+
     max-height: 300px;
   }
-  padding: 5px;
+  margin: 5px;
   width: 100%;
   border-radius: 16px;
 
@@ -69,7 +80,7 @@ const TrackAdd = styled(IoAddCircleOutline)`
   }
 `;
 
-const Track = ({ track, onClickContainer, onClickIcon }) => {
+const Track = ({ track, onClickContainer, onClickIcon, noIcon }) => {
   return (
     <TrackContainer onClick={onClickContainer}>
       <TrackImage src={track.album.images[0].url}></TrackImage>
@@ -77,8 +88,7 @@ const Track = ({ track, onClickContainer, onClickIcon }) => {
         <div>{track.name} </div>
         <div>{track.artists[0].name}</div>
       </TrackDescriptionContainer>
-
-      <TrackAdd onClick={onClickIcon} />
+      {!noIcon && <TrackAdd onClick={onClickIcon} />}
     </TrackContainer>
   );
 };
