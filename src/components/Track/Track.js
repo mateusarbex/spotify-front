@@ -1,11 +1,5 @@
-import styled, { keyframes } from "styled-components";
-import { IoAddCircleOutline } from "react-icons/io5";
-
-const activeClick = keyframes`
-  to{
-    background-color:#1f1f1f;
-  }
-`;
+import styled from "styled-components";
+import { IoAddCircleOutline, IoCheckmark } from "react-icons/io5";
 
 const TrackContainer = styled.div`
   position: relative;
@@ -64,6 +58,7 @@ const TrackDescriptionContainer = styled.div`
 const TrackAdd = styled(IoAddCircleOutline)`
   margin-right: 10px;
   align-self: center;
+  z-index: 2;
   height: 48px;
   width: 48px;
   position: absolute;
@@ -79,8 +74,20 @@ const TrackAdd = styled(IoAddCircleOutline)`
     color: green;
   }
 `;
+const TrackCheck = styled(IoCheckmark)`
+  margin-right: 10px;
+  align-self: center;
+  height: 48px;
+  width: 48px;
+  position: absolute;
+  right: 0px;
+  float: right;
+  @media (max-width: 400px) {
+    display: none;
+  }
+`;
 
-const Track = ({ track, onClickContainer, onClickIcon, noIcon }) => {
+const Track = ({ track, onClickContainer, onClickIcon, noIcon, queued }) => {
   return (
     <TrackContainer onClick={onClickContainer}>
       <TrackImage src={track.album.images[0].url}></TrackImage>
@@ -88,7 +95,8 @@ const Track = ({ track, onClickContainer, onClickIcon, noIcon }) => {
         <div>{track.name} </div>
         <div>{track.artists[0].name}</div>
       </TrackDescriptionContainer>
-      {!noIcon && <TrackAdd onClick={onClickIcon} />}
+      {(!noIcon && queued && <TrackCheck />) ||
+        (!noIcon && <TrackAdd onClick={onClickIcon} />)}
     </TrackContainer>
   );
 };

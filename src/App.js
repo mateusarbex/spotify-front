@@ -7,6 +7,7 @@ import InputSpotify from "./components/InputSpotify/InputSpotify";
 import Track from "./components/Track/Track";
 import { IoPlayCircleOutline } from "react-icons/io5";
 import TrackSkeleton from "./components/TrackSkeleton/TrackSkeleton";
+import { useToasts } from "react-toast-notifications";
 
 const TracksContainer = styled.div`
   max-width: 100vw;
@@ -29,11 +30,14 @@ const api = axios.create({
 });
 
 function App() {
+  const { addToast } = useToasts();
+
   const [currentTrack, setCurrentTrack] = useState();
   const [input, setInput] = useState("");
   const [tracks, setTracks] = useState([]);
   const [fetch, setFetch] = useState(false);
-  const [error, setError] = useState("");
+  const [queueing, setQueueing] = useState();
+  const [queuedTracks, setQueuedTracks] = useState([]);
 
   const getCurrentSong = async () => {
     try {
@@ -46,9 +50,10 @@ function App() {
 
   useEffect(() => {
     getCurrentSong();
-  }, []);
+  }, [fetch]);
 
   const queryInput = async () => {
+    setQueuedTracks([]);
     setFetch(true);
     try {
       if (input) {
@@ -66,15 +71,24 @@ function App() {
   };
 
   const addToQueue = async (uri) => {
-    try {
-      const response = await api
-        .post("add_to_queue", { uri })
-        .catch((err) => console.log(err));
-      if (typeof response.data === "string") {
-        setError(response.data);
+    if (!queueing) {
+      try {
+        setQueueing(true);
+        const response = await api
+          .post("add_to_queue", { uri })
+          .catch((err) => console.log(err));
+        setQueueing(false);
+        if (typeof response.data === "string") {
+          return addToast(response.data, { appearance: "error" });
+        }
+        setQueuedTracks([...queuedTracks, uri]);
+        return addToast("Música adicionada com sucesso", {
+          appearance: "success",
+        });
+      } catch (err) {
+        console.log(err);
+        setQueueing(false);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -87,9 +101,11 @@ function App() {
         <div>
           <div
             style={{
+              justifyContent: "center",
               flexDirection: "row",
               display: "flex",
               alignItems: "center",
+              margin: 5,
             }}
           >
             <h2 style={{ letterSpacing: "3px", marginRight: 10 }}>
@@ -122,9 +138,13 @@ function App() {
           tracks.map((value) => {
             return (
               <Track
+                queued={queuedTracks.some((uri) => uri === value.uri)}
                 track={value}
                 onClickContainer={() => addToQueue(value.uri)}
-                onClickIcon={() => addToQueue(value.uri)}
+                onClickIcon={(event) => {
+                  event.stopPropagation();
+                  addToQueue(value.uri);
+                }}
               />
             );
           })}
