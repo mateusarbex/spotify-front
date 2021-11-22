@@ -25,7 +25,7 @@ const SpotifyLogo = styled(BsSpotify)`
 `;
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: "https://redes-spotify-back.herokuapp.com/",
   headers: { "Content-Type": "application/json" },
 });
 
@@ -45,7 +45,7 @@ function App() {
       if (typeof current_song.data != "string") {
         setCurrentTrack(current_song.data);
       }
-    } catch {}
+    } catch { }
   };
 
   useEffect(() => {

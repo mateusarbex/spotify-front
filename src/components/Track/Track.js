@@ -26,12 +26,9 @@ const TrackContainer = styled.div`
 `;
 
 const TrackImage = styled.img`
-  @media (max-width: 400px) {
-    max-width: 128px;
-    max-height: 128px;
-    align-self: center;
-  }
-  height: auto;
+  max-width: 128px;
+  align-self: center;
+  height: 100px;
 `;
 
 const TrackDescriptionContainer = styled.div`
