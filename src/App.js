@@ -27,6 +27,7 @@ const SpotifyLogo = styled(BsSpotify)`
 const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 function App() {
@@ -45,7 +46,7 @@ function App() {
       if (typeof current_song.data != "string") {
         setCurrentTrack(current_song.data);
       }
-    } catch { }
+    } catch {}
   };
 
   useEffect(() => {
@@ -95,7 +96,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header" />
-
       <SpotifyLogo />
       {currentTrack && (
         <div>
