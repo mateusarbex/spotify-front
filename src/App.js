@@ -25,7 +25,7 @@ const SpotifyLogo = styled(BsSpotify)`
 `;
 
 const api = axios.create({
-  baseURL: "https://redes-spotify-back.herokuapp.com/",
+  baseURL: process.env.REACT_APP_BASE_URL,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
