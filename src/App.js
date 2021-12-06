@@ -101,11 +101,6 @@ function App() {
     <div className="App">
       <header className="App-header" />
       <SpotifyLogo />
-      <button
-        onClick={() => api.get("count").then((data) => console.log(data))}
-      >
-        check count
-      </button>
       {currentTrack && (
         <div>
           <div
