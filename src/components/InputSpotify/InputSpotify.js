@@ -43,7 +43,6 @@ const InputSpotify = ({ onBlur, onInput, value, placeholder, onIconClick }) => {
         }}
         value={value}
         onInput={onInput}
-        onBlur={onBlur}
         type={"search"}
         placeholder={placeholder}
       ></InputSpot>

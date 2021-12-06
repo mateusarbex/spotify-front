@@ -80,11 +80,15 @@ function App() {
           .catch((err) => console.log(err));
         setQueueing(false);
         if (typeof response.data === "string") {
-          return addToast(response.data, { appearance: "error" });
+          return addToast(response.data, {
+            appearance: "error",
+            autoDismiss: true,
+          });
         }
         setQueuedTracks([...queuedTracks, uri]);
         return addToast("Música adicionada com sucesso", {
           appearance: "success",
+          autoDismiss: true,
         });
       } catch (err) {
         console.log(err);
@@ -97,6 +101,11 @@ function App() {
     <div className="App">
       <header className="App-header" />
       <SpotifyLogo />
+      <button
+        onClick={() => api.get("count").then((data) => console.log(data))}
+      >
+        check count
+      </button>
       {currentTrack && (
         <div>
           <div
