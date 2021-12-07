@@ -24,6 +24,12 @@ const SpotifyLogo = styled(BsSpotify)`
   margin-bottom: 30px;
 `;
 
+const NextContainer = styled.div`
+  padding: 5px;
+  margin-bottom: 15px;
+  letter-spacing: 5px;
+`;
+
 const api = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: { "Content-Type": "application/json" },
@@ -34,6 +40,7 @@ function App() {
   const { addToast } = useToasts();
 
   const [currentTrack, setCurrentTrack] = useState();
+  const [queue, setQueue] = useState([]);
   const [input, setInput] = useState("");
   const [tracks, setTracks] = useState([]);
   const [fetch, setFetch] = useState(false);
@@ -48,10 +55,19 @@ function App() {
       }
     } catch {}
   };
+  const getQueue = async () => {
+    try {
+      const queue = await api.get("queue");
+      setQueue(queue.data.tracks);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     getCurrentSong();
-  }, [fetch]);
+    getQueue();
+  }, [fetch, queueing]);
 
   const queryInput = async () => {
     setQueuedTracks([]);
@@ -101,6 +117,7 @@ function App() {
     <div className="App">
       <header className="App-header" />
       <SpotifyLogo />
+
       {currentTrack && (
         <div>
           <div
@@ -121,6 +138,32 @@ function App() {
           <TracksContainer>
             <Track noIcon={true} track={currentTrack}></Track>
           </TracksContainer>
+        </div>
+      )}
+      {queue.length > 0 && (
+        <div>
+          <div
+            style={{
+              justifyContent: "center",
+              flexDirection: "row",
+              display: "flex",
+              alignItems: "center",
+              margin: 5,
+            }}
+          >
+            <h2 style={{ letterSpacing: "3px", marginRight: 10 }}>NEXT</h2>
+          </div>
+
+          <TracksContainer>
+            <Track noIcon={true} track={queue[0]}></Track>
+          </TracksContainer>
+          <NextContainer>
+            {queue.slice(1).map((data) => (
+              <div style={{ letterSpacing: 1 }}>
+                {data.name} - {data.artists[0].name}
+              </div>
+            ))}
+          </NextContainer>
         </div>
       )}
 
