@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { IoAddCircleOutline, IoCheckmark } from "react-icons/io5";
+import { Circles } from "react-loading-icons";
 
 const TrackContainer = styled.div`
   position: relative;
@@ -71,6 +72,27 @@ const TrackAdd = styled(IoAddCircleOutline)`
     color: green;
   }
 `;
+
+const TrackLoading = styled(Circles)`
+  margin-right: 10px;
+  align-self: center;
+  z-index: 2;
+  height: 48px;
+  width: 48px;
+  position: absolute;
+  right: 0px;
+  float: right;
+  @media (max-width: 400px) {
+    display: none;
+  }
+  :active {
+    transform: translateY(4px);
+  }
+  :hover {
+    color: green;
+  }
+`;
+
 const TrackCheck = styled(IoCheckmark)`
   margin-right: 10px;
   align-self: center;
@@ -84,7 +106,14 @@ const TrackCheck = styled(IoCheckmark)`
   }
 `;
 
-const Track = ({ track, onClickContainer, onClickIcon, noIcon, queued }) => {
+const Track = ({
+  track,
+  onClickContainer,
+  onClickIcon,
+  noIcon,
+  queued,
+  requesting,
+}) => {
   return (
     <TrackContainer onClick={onClickContainer}>
       <TrackImage src={track.album.images[0].url}></TrackImage>
@@ -93,7 +122,8 @@ const Track = ({ track, onClickContainer, onClickIcon, noIcon, queued }) => {
         <div>{track.artists[0].name}</div>
       </TrackDescriptionContainer>
       {(!noIcon && queued && <TrackCheck />) ||
-        (!noIcon && <TrackAdd onClick={onClickIcon} />)}
+        (!noIcon && !requesting && <TrackAdd onClick={onClickIcon} />) ||
+        (requesting && <TrackLoading />)}
     </TrackContainer>
   );
 };

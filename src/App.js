@@ -37,7 +37,7 @@ function App() {
   const [input, setInput] = useState("");
   const [tracks, setTracks] = useState([]);
   const [fetch, setFetch] = useState(false);
-  const [queueing, setQueueing] = useState();
+  const [queueing, setQueueing] = useState(false);
   const [queuedTracks, setQueuedTracks] = useState([]);
 
   const getCurrentSong = async () => {
@@ -71,10 +71,10 @@ function App() {
     setFetch(false);
   };
 
-  const addToQueue = async (uri) => {
+  const addToQueue = async (uri, index) => {
     if (!queueing) {
       try {
-        setQueueing(true);
+        setQueueing(index);
         const response = await api
           .post("add_to_queue", { uri })
           .catch((err) => console.log(err));
@@ -139,15 +139,16 @@ function App() {
       )}
       <TracksContainer>
         {!fetch &&
-          tracks.map((value) => {
+          tracks.map((value, index) => {
             return (
               <Track
                 queued={queuedTracks.some((uri) => uri === value.uri)}
                 track={value}
-                onClickContainer={() => addToQueue(value.uri)}
+                requesting={queueing === index}
+                onClickContainer={() => addToQueue(value.uri, index)}
                 onClickIcon={(event) => {
                   event.stopPropagation();
-                  addToQueue(value.uri);
+                  addToQueue(value.uri, index);
                 }}
               />
             );
